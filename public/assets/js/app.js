@@ -14,6 +14,7 @@ function submit(e) {
   balanceEl.innerText = total;
   addToList(expenseEl.value, priceEl.value);
   let data = {"expense": expenseEl.value, "price": priceEl.value};
+  console.log(data);
   saveExpense(data);
 }
 

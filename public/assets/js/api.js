@@ -2,11 +2,15 @@
 
 export function loadExpenses() {
     return fetch("/api/expenses")
-      .then(res => res.json())
+      .then(function(res) {
+          console.log(res);
+          res.json();
+        })
       .catch(err => reject(err));
 }
 
 export function saveExpense(data) {
+    console.log("This data is being saved: "+JSON.stringify(data))
     return fetch ("/api/submit", {
         method: "POST",
         dataType: "json",

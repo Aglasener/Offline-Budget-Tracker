@@ -43,13 +43,14 @@ const FILES_TO_CACHE = [
   self.addEventListener("fetch", function(evt) {
     if (evt.request.url.includes("/api/")) {
       console.log("[Service Worker] Fetch (data)", evt.request.url);
-  
+        console.log("This was request" + JSON.stringify(evt.request))
       evt.respondWith(
         caches.open(DATA_CACHE_NAME).then(cache => {
           return fetch(evt.request)
             .then(response => {
               // If the response was good, clone it and store it in the cache.
               if (response.status === 200) {
+                console.log("This was the response!"+ JSON.stringify(response))
                 cache.put(evt.request.url, response.clone());
               }
   
