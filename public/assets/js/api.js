@@ -14,10 +14,7 @@ export function saveExpense(data) {
     return fetch ("/api/submit", {
         method: "POST",
         dataType: "json",
-        data: {
-            expense: data.expense,
-            price: data.price
-        }
+        data: JSON.stringify(data)
     })
       .then (function(results) {
         console.log(results);

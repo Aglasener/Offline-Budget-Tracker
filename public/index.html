@@ -65,15 +65,20 @@
         
           if("serviceWorker" in navigator) {
             navigator.serviceWorker
-              .register("./service-worker.js", {
-                scope: "http://localhost:3000"
-              })
-              .then(res => {
-                console.log(res);
-                console.log("Service Worker registered successfully.");
-              })
-              .catch(error => console.log("Service Worker registration failed:", error));
-          }
+                .register("./service-worker.js", {
+                    scope: "http://localhost:3000"
+                })
+                .then(res => {
+                    console.log(res);
+                    console.log("Service Worker registered successfully.");
+                    return navigator.serviceWorker.ready
+                })
+                .then(registration => {
+                    console.log("Service Worker Ready")
+                    document.getElementById("submit").addEventListener("click", evt => {
+                    registration.sync.register("formData")})
+                
+          })}
         
     
       </script>

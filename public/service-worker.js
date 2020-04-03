@@ -1,3 +1,5 @@
+
+
 const FILES_TO_CACHE = [
     "/",
     "/index.html",
@@ -76,3 +78,88 @@ const FILES_TO_CACHE = [
   
   });
   
+  //sync
+
+  self.addEventListener("sync", evt => {
+      console.log("now online");
+      if (evt.tag === "formData"){
+          evt.waitUntil(
+            useIndexedDb("expense", "expenseStore", "get")
+            // .then(
+            //     function(res){console.log(res)})
+            )
+            // .catch(err => {return err;})
+      }
+  })
+
+function useIndexedDb (databaseName, storeName, method, object){
+    var getObjectStore
+    const request = indexedDB.open(databaseName, 1).objectStore(storeName);
+
+
+request.onupgradeneeded = function(e) {
+    var db = request.result;
+    
+
+    db.createObjectStore(storeName, { keyPath: "_id" });
+  };
+
+  request.onerror = function(e) {
+    console.log("There was an error");
+  };
+
+  request.onsuccess = function(e) {
+   
+    var db = request.result;
+    var tx = db.transaction(storeName, "readwrite");
+    var store = tx.objectStore(storeName);
+    db.onerror = function(e) {
+      console.log("error");
+    };
+    if (method === "put") {
+      store.put(object);
+    }
+    if (method === "clear") {
+      store.clear();
+    }
+    if (method === "get") {
+      const all = store.getAll();
+      all.onsuccess = function() {
+        return (all.result);
+      };
+    }
+    tx.oncomplete = function() {
+        
+      db.close();
+    };
+  };
+}
+
+
+
+function loadExpenses() {
+    return fetch("/api/expenses")
+      .then(function(res) {
+          console.log(res);
+          res.json();
+        })
+      .catch(err => reject(err));
+}
+
+function saveExpense(data) {
+    console.log("This data is being saved: "+JSON.stringify(data))
+    return fetch ("/api/submit", {
+        method: "POST",
+        dataType: "json",
+        data: JSON.stringify(data)
+    })
+      .then (function(results) {
+        console.log(results);
+      })
+}
+
+function resetExpense() {
+  return fetch ("/api/reset", {
+      method: "DELETE"
+  })
+}

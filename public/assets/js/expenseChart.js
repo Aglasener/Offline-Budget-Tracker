@@ -1,5 +1,5 @@
 
-import { loadExpenses } from "./api";
+import { useIndexedDb } from "./indexedDb";
 
 const ctx = document.getElementById("myChart").getContext("2d");
 export const expensesChart = new Chart(ctx, {
@@ -62,8 +62,7 @@ export function resetChart(expenseChart) {
   expenseChart.update();
 }
 
-loadExpenses().then(results => {
-  console.log("Expense: " + results);
+useIndexedDb("expense", "expenseStore", "get").then(results => {
   results.forEach(expense => {
     updateChart(expensesChart, expense.name, expense.value);
   });
